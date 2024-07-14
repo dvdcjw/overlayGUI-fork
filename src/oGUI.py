@@ -60,6 +60,7 @@ class Checkbox:
         self.insideColor = insideColor
         self.x = x
         self.y = y
+        self.mouse_holding = False
         self.width = width
         self.height = height
         self.checkBox_enabled = enabledByDefault
@@ -91,10 +92,13 @@ class Checkbox:
                                  pygame.Rect(self.x - self.width / 8, self.y - self.height / 8,
                                              self.width + self.width / 4, self.height + self.height / 4))
 
-            # When clicked
+            # When clicked + check if mouse was continuous held in the previous frames
             if mouse.get_pressed()[0]:
-                self.checkBox_enabled = not self.checkBox_enabled
-                time.sleep(0.15)
+                if not self.mouse_holding:
+                    self.checkBox_enabled = not self.checkBox_enabled
+                self.mouse_holding = True
+            else:
+                self.mouse_holding = False
 
         if self.checkBox_enabled:
             pygame.draw.rect(screen, self.insideColor, pygame.Rect(self.x, self.y, self.width, self.height))
