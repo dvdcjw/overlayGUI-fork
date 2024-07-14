@@ -1,4 +1,18 @@
+import random
+
 import pygame, win32api, win32gui, win32con, time
+
+# A storage dict, stores all buttons, checkboxes.
+# Enabled draw_gui function, which draws all elements in the dict.
+# And the major update --- Callback function.
+# Now, instead of manually checking the status and run a function,
+# which would lead to code duplication and stability problems
+# You can just assign a function to the element's "callback" attribute,
+# and it will be called ONCE when the element is altered.
+#
+# It stores {object:{last_frame_enabled ...}, ...}
+
+widgets = {}
 
 version = 0.4
 
@@ -54,8 +68,10 @@ def endLoop():
 
 
 class Checkbox:
-
-    def __init__(self, outsideColor, insideColor, x, y, width, height, enabledByDefault=False):
+    def __init__(self, outsideColor, insideColor, x, y, width, height, text=None, checked_callback=None, toggled_callback=None,
+                 enabledByDefault=False):
+        global widgets
+        widgets[self] = {}
         self.outsideColor = outsideColor
         self.insideColor = insideColor
         self.x = x
@@ -64,8 +80,8 @@ class Checkbox:
         self.width = width
         self.height = height
         self.checkBox_enabled = enabledByDefault
-        self.is_hoverable = False
-        self.hover_color = gray
+        self.is_hoverable = True
+        self.hover_color = (self.insideColor[0] / 2, self.insideColor[1] / 2, self.insideColor[2] / 2)
         self.boolMousePos = False
 
     def is_hovered(self, hoveredColor):
@@ -108,8 +124,9 @@ class Checkbox:
 
 
 class Rect:
-
     def __init__(self, color, x, y, width, height):
+        global widgets
+        widgets[self] = {}
         self.color = color
         self.x = x
         self.y = y
@@ -123,6 +140,8 @@ class Rect:
 class Box:
 
     def __init__(self, color, x, y, width, height, thickness):
+        global widgets
+        widgets[self] = {}
         self.color = color
         self.x = x
         self.y = y
@@ -141,18 +160,19 @@ class Box:
 
 class Text:
 
-    def __init__(self, color, x, y, FontSize, textStr):
+    def __init__(self, color, x, y, FontSize, textStr, dropShadowEnabled=True):
+        global widgets
+        widgets[self] = {}
         pygame.font.init()
         self.color = color
         self.x = x
         self.y = y
         self.FontSize = FontSize
         self.textStr = textStr
-        self.FontString = 'Arial'
-        # DropShadow
-        self.dropShadowEnabled = False
+        self.FontString = 'Roboto'
         self.dropShadowColor = black
         self.dropShadowOffset = 2
+        self.dropShadowEnabled = dropShadowEnabled
 
     def font(self, fontStr):
         self.FontString = fontStr
@@ -174,7 +194,10 @@ class Text:
 
 
 class Button:
-    def __init__(self, color, clickedColor, x, y, width, height, text=''):
+    def __init__(self, color, clickedColor, x, y, width, height, text='', clicked_callback=None):
+        global widgets
+        widgets[self] = {}
+        self.type = 'button'
         self.color = color
         self.clickedColor = clickedColor
         self.x = x
@@ -182,8 +205,9 @@ class Button:
         self.width = width
         self.height = height
         self.text = text
-        self.is_hoverable = False
-        self.hover_color = gray
+        self.text_widget = Text(self.clickedColor, self.x + self.width + 5, self.y, 20, self.text)
+        self.is_hoverable = True
+        self.hover_color = (self.clickedColor[0] / 2, self.clickedColor[1] / 2, self.clickedColor[2] / 2)
         self.button_enabled = False
 
     def is_enabled(self):
@@ -199,7 +223,7 @@ class Button:
         mouse = pygame.mouse
 
         if self.x + self.width > mouse.get_pos()[0] > self.x and self.y + self.height > mouse.get_pos()[1] > self.y:
-            if self.is_hoverable:
+            if self.is_hovered:
                 pygame.draw.rect(screen, self.hover_color, pygame.Rect(self.x, self.y, self.width, self.height))
 
             if mouse.get_pressed()[0]:
@@ -207,3 +231,12 @@ class Button:
                 pygame.draw.rect(screen, self.clickedColor, pygame.Rect(self.x, self.y, self.width, self.height))
             else:
                 self.button_enabled = False
+
+
+def draw_gui():
+    for i in widgets:
+        i.draw()
+
+
+def handle_gui_alter(checkbox):
+    pass
