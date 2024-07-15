@@ -20,8 +20,8 @@ while True:
   oGUI.endLoop()
 ```
 
-*Inbetween* the `start` and `end` loop, you should execute the update_gui() ONCE.
-Then it will redraw all the gui and handle the callbacks for you
+*Inbetween* the `start` and `end` loop, you should execute the update_gui() *ONCE*.
+Then it will render all the gui and handle the callbacks for you
 
 *Here is an example:*
 ```py
