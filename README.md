@@ -106,6 +106,11 @@ while True:
 
     oGUI.endLoop()  # End of Draw Loop
 ```
+The function *button_clicked* will be executed everytime the button is clicked.
+However, the function will be run in the main thread defaultly, 
+this means the rest of the program and the mainloop would have to wait for the called function to finish.
+So if the function takes up a considerable amount of time, the gui will noticibly stop responding. 
+To fix this, use multithread libs, so that the callback function and the maintheard can run simultaneously.
 
 Notice that you WON'T want the brackets if you're defining the callback, 
 Just like in the example, we used button_clicked NOT button_clicked().
