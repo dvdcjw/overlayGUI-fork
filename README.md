@@ -68,7 +68,7 @@ enabledByDefault is optional, and if you leave it blank (dont specify it), it wi
 We will continue to use *checkbox1* as the *checkbox variable* for the rest of the documentation, and the *rest of these functions* should be called in an **infinite loop.**
 
 To *render* the actual checkbox, ~~we must call its `.draw()` function~~
-Now, you will only have to run the update_gui() **ONCE** and it will draw **ALL* the widgets you've created(as long as they're not hidden) for you.
+Now, you will only have to run the update_gui() **ONCE** and it will draw *ALL* the widgets you've created(as long as they're not hidden) for you.
 So idealy, you won't have to call the draw function manually.
 Usage:
 ```py
